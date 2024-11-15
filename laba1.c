@@ -6,16 +6,17 @@
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condition = PTHREAD_COND_INITIALIZER;
 
-int ready = 0;
+volatile int ready = 0;
 void* producer(void* arg) {
     int i = 0;
     while (i<=10) {
         sleep(1);
+        pthread_mutex_lock(&mutex);
         if(ready == 1) 
         {
+            pthread_mutex_unlock(&mutex);
             continue;
         }
-        pthread_mutex_lock(&mutex);
         if(i == 10)
         {
             ready = -1;
@@ -35,12 +36,10 @@ void* producer(void* arg) {
 
 void* consumer(void* arg) {
     while (1) {
-        if(ready == 0) 
-        {
-            continue;
-        }
-    
         pthread_mutex_lock(&mutex);
+        while (ready == 0) {
+            pthread_cond_wait(&condition, &mutex);
+        }
         if(ready == -1){
             printf("Обрабатываю последний сигнал\n");
             ready = 0;
