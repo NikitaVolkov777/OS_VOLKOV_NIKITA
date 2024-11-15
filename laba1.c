@@ -10,14 +10,12 @@ int ready = 0;
 void* producer(void* arg) {
     int i = 0;
     while (i<10) {
-        i++;
         sleep(1);
         pthread_mutex_lock(&mutex);
         if(ready == 1) 
         {
             continue;
         }
-        
         if(i == 10)
         {
             ready = -1;
@@ -28,6 +26,7 @@ void* producer(void* arg) {
             ready = 1; 
             printf("Отдача\n");
         }
+        i++;
         pthread_cond_signal(&condition);
         pthread_mutex_unlock(&mutex);
     }
