@@ -13,9 +13,9 @@ void* producer(void* arg) {
         i++;
         sleep(1);
         pthread_mutex_lock(&mutex);
-        while(ready) 
+        if(ready == 1) 
         {
-            pthread_cond_wait(&condition, &mutex);
+            continue;
         }
         
         if(i == 10)
