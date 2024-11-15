@@ -9,13 +9,13 @@ pthread_cond_t condition = PTHREAD_COND_INITIALIZER;
 int ready = 0;
 void* producer(void* arg) {
     int i = 0;
-    while (i<10) {
+    while (i<=10) {
         sleep(1);
-        pthread_mutex_lock(&mutex);
         if(ready == 1) 
         {
             continue;
         }
+        pthread_mutex_lock(&mutex);
         if(i == 10)
         {
             ready = -1;
@@ -35,14 +35,15 @@ void* producer(void* arg) {
 
 void* consumer(void* arg) {
     while (1) {
-        pthread_mutex_lock(&mutex);
-
-        while (!ready) {
-            pthread_cond_wait(&condition, &mutex);
+        if(ready == 0) 
+        {
+            continue;
         }
-
+    
+        pthread_mutex_lock(&mutex);
         if(ready == -1){
             printf("Обрабатываю последний сигнал\n");
+            ready = 0;
             pthread_mutex_unlock(&mutex);
             break;
         }
