@@ -12,7 +12,7 @@
 #include <sys/select.h>
 
 #define PORT 12345
-#define BUFFER_SIZE 1024
+#define bufSize 1024
 
 volatile sig_atomic_t sighup_received = 0;
 
@@ -23,12 +23,12 @@ void handle_signal(int sig) {
 }
 
 void set_non_blocking(int fd) {
-    int flags = fcntl(fd, F_GETFL, 0);
-    if (flags == -1) {
+    int f = fcntl(fd, F_GETFL, 0);
+    if (f == -1) {
         perror("fcntl get");
         exit(EXIT_FAILURE);
     }
-    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) {
+    if (fcntl(fd, F_SETFL, f | O_NONBLOCK) == -1) {
         perror("fcntl set");
         exit(EXIT_FAILURE);
     }
@@ -40,7 +40,7 @@ int main() {
     socklen_t client_len = sizeof(client_addr);
     fd_set read_fds;
     struct sigaction sa;
-    char buffer[BUFFER_SIZE];
+    char buffer[bufSize];
     ssize_t bytes_read;
 
     // Настройка обработки сигнала
@@ -133,7 +133,7 @@ int main() {
 
         // Чтение данных от активного клиента
         if (active_fd != -1 && FD_ISSET(active_fd, &read_fds)) {
-            bytes_read = read(active_fd, buffer, BUFFER_SIZE);
+            bytes_read = read(active_fd, buffer, bufSize);
             if (bytes_read > 0) {
                 printf("Получено %zd байтов\n", bytes_read);
             } else if (bytes_read == 0 || (bytes_read == -1 && errno != EAGAIN)) {
