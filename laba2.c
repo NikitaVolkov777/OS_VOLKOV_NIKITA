@@ -128,7 +128,7 @@ int main() {
                 active_fd = client_fd;
                 set_non_blocking(active_fd);
             } else {
-                printf("Закрытие избыточного соединения\n");
+                printf("Соединение разорвано\n");
                 close(client_fd);
             }
         }
