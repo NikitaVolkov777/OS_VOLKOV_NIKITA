@@ -10,14 +10,14 @@ MODULE_AUTHOR("Volkov Nikita group 932220");
 MODULE_DESCRIPTION("Simple kernel model");
 MODULE_VERSION("0.1");
 
-static int __init tsu_module_init(void) {
+static int __init Module_init(void) {
     pr_info("Welcome to the Tomsk State University\n");
     return 0;
 }
 
-static void __exit tsu_module_exit(void) {
+static void __exit Module_exit(void) {
     pr_info("Tomsk State University forever!\n");
 }
 
-module_init(tsu_module_init);
-module_exit(tsu_module_exit);
+module_init(Module_init);
+module_exit(Module_exit);
