@@ -20,7 +20,7 @@ static ssize_t proc_read(struct file *file, char __user *buf, size_t count, loff
 
     int sum = K * (2 * start + (K - 1) * step) / 2;
 
-    int len = snprintf(buffer, sizeof(buffer), "Количество членов арифметической прогрессии: %d\nСумма членов арифметической прогрессии: %d\n", K, sum);
+    int len = snprintf(buffer, sizeof(buffer), "Сумма первых %d членов арифметической прогрессии: %d\n", K, sum);
 
     if (copy_to_user(buf, buffer, len)) {
         return -EFAULT;
