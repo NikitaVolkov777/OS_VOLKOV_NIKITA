@@ -1,4 +1,4 @@
-obj-m += laba3.o
+obj-m += laba4.o
 
 PWD := $(CURDIR)
 
