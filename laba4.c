@@ -3,11 +3,11 @@
 #include <linux/init.h>
 #include <linux/proc_fs.h>
 #include <linux/uaccess.h>
-#include <linux/random.h>
+
+static int K = 1;
 
 static ssize_t proc_read(struct file *file, char __user *buf, size_t count, loff_t *ppos) {
-    static char buffer[512];
-    static int len = 0;
+    static char buffer[128];
     static int finished = 0;
 
     if (finished) {
@@ -17,23 +17,16 @@ static ssize_t proc_read(struct file *file, char __user *buf, size_t count, loff
 
     int start = 5; // начальный элемент прогрессии
     int step = 3;  // шаг прогрессии
-    int num_elements;
 
-    get_random_bytes(&num_elements, sizeof(num_elements));
-    num_elements = (abs(num_elements) % 11) + 5;
+    int sum = K * (2 * start + (K - 1) * step) / 2;
 
-    len = snprintf(buffer, sizeof(buffer), "Количество членов арифметической прогрессии: %d\nСуммы:\n", num_elements);
-
-    int sum = 0;
-    for (int i = 0; i < num_elements; i++) {
-        sum += start + i * step;
-        len += snprintf(buffer + len, sizeof(buffer) - len, "%d\n", sum);
-    }
+    int len = snprintf(buffer, sizeof(buffer), "Сумма первых %d членов арифметической прогрессии: %d\n", K, sum);
 
     if (copy_to_user(buf, buffer, len)) {
         return -EFAULT;
     }
 
+    K++;
     finished = 1;
     return len;
 }
